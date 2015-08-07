@@ -129,8 +129,7 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     scope: {
       json: '=',
       key: '=',
-      open: '=',
-      thumbnail: '='
+      open: '='
     },
     compile: function(element) {
 
