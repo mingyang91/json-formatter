@@ -220,12 +220,12 @@ describe('json-formatter', function () {
 
       it('simple object', function () {
         element = createDirective('simpleObject');
-        expect(element.find('.thumbnail-text').text().trim()).toBe('{"me":1}');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{me:1}');
       });
 
       it('longer object', function () {
         element = createDirective('longerObject');
-        expect(element.find('.thumbnail-text').text().trim()).toBe('{"numbers":Array[3], "boolean":true, "null":null, "number":123, "anObject":Object...}');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{numbers:Array[3], boolean:true, null:null, number:123, anObject:Object...}');
       });
     });
   });

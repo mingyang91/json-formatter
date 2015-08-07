@@ -1,7 +1,7 @@
 /*!
  * jsonformatter
  * 
- * Version: 0.3.1 - 2015-08-07T04:24:09.930Z
+ * Version: 0.3.1 - 2015-08-07T10:48:55.710Z
  * License: MIT
  */
 
@@ -84,6 +84,7 @@
 .json-formatter-row > a > .thumbnail-text {
   opacity: 0;
   transition: .15s;
+  font-style: italic;
 }
 .json-formatter-row:hover > a > .thumbnail-text {
   opacity: 0.6;
@@ -166,6 +167,7 @@
 .json-formatter-dark.json-formatter-row > a > .thumbnail-text {
   opacity: 0;
   transition: .15s;
+  font-style: italic;
 }
 .json-formatter-dark.json-formatter-row:hover > a > .thumbnail-text {
   opacity: 0.6;

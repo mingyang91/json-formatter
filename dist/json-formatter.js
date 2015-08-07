@@ -1,7 +1,7 @@
 /*!
  * jsonformatter
  * 
- * Version: 0.3.1 - 2015-08-07T04:24:09.922Z
+ * Version: 0.3.1 - 2015-08-07T10:48:55.703Z
  * License: MIT
  */
 
@@ -39,13 +39,43 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     return typeof object;
   }
 
+  function isObject(object) {
+    return object && typeof object === 'object';
+  }
+
+  function isArray(object) {
+    return Array.isArray(object)
+  }
+
+  function parseValue (object, value) {
+    var type = getType(object);
+    if (type === 'null') {
+      return 'null';
+    }
+    if (type === 'undefined') {
+      return 'undefined';
+    }
+    if (type === 'string') {
+      value = '"' + escapeString(value) + '"';
+    }
+    if (type === 'function'){
+
+      // Remove content of the function
+      return object.toString()
+          .replace(/[\r\n]/g, '')
+          .replace(/\{.*\}/, '') + '{ ... }';
+
+    }
+    return value;
+  }
+
   function link(scope, element, attributes) {
     scope.isArray = function () {
-      return Array.isArray(scope.json);
+      return isArray(scope.json);
     };
 
     scope.isObject = function() {
-      return scope.json && typeof scope.json === 'object';
+      return isObject(scope.json);
     };
 
     scope.getKeys = function (){
@@ -100,33 +130,36 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     };
 
     scope.parseValue = function (value){
-      scope.type = getType(scope.json);
-      if (scope.type === 'null') {
-        return 'null';
-      }
-      if (scope.type === 'undefined') {
-        return 'undefined';
-      }
-      if (scope.type === 'string') {
-        value = '"' + escapeString(value) + '"';
-      }
-      if (scope.type === 'function'){
-
-        // Remove content of the function
-        return scope.json.toString()
-          .replace(/[\r\n]/g, '')
-          .replace(/\{.*\}/, '') + '{ ... }';
-
-      }
-      return value;
+      return parseValue(scope.json, value);
     };
 
     scope.getThumbnail = function (object) {
-      var result = JSON.stringify(object);
-      if (result.length >= 47) {
-        result = result.substring(0, 47) + "...";
-      }
-      return result;
+      var keys = scope.getKeys();
+      //
+      // the first five keys (like Chrome Developer Tool)
+      var narrowKeys = keys.filter(function (e, i) { return i < 5; });
+
+      //
+      // json value schematic information
+      var kvs = narrowKeys.map(function (e) {
+        var value = '';
+        if (isObject(scope.json[e])) {
+          value = getObjectName(scope.json[e]);
+          if (isArray(scope.json[e]))
+            value += '[' + scope.json[e].length + ']';
+        } else {
+          value = parseValue(scope.json[e], scope.json[e]);
+        }
+
+        return '' + e + ':' + value;
+      });
+
+      //
+      // if keys count greater then 5
+      // then show ellipsis
+      var ellipsis = keys.length >= 5 ? "..." : '';
+
+      return '{' + kvs.join(', ') + ellipsis + '}';
     };
   }
 

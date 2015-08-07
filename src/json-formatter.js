@@ -143,7 +143,7 @@ angular.module('jsonFormatter', ['RecursionHelper'])
           value = parseValue(scope.json[e], scope.json[e]);
         }
 
-        return '"' + e + '":' + value;
+        return '' + e + ':' + value;
       });
 
       //
