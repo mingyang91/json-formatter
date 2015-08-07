@@ -225,7 +225,7 @@ describe('json-formatter', function () {
 
       it('longer object', function () {
         element = createDirective('longerObject');
-        expect(element.find('.thumbnail-text').text().trim()).toBe('{"numbers":[1,2,3],"boolean":true,"null":null,"...');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{"numbers":Array[3], "boolean":true, "null":null, "number":123, "anObject":Object...}');
       });
     });
   });
