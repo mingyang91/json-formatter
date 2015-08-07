@@ -1,7 +1,7 @@
 /*!
  * jsonformatter
  * 
- * Version: 0.3.1 - 2015-08-07T04:17:57.005Z
+ * Version: 0.3.1 - 2015-08-07T04:24:09.922Z
  * License: MIT
  */
 
@@ -137,8 +137,7 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     scope: {
       json: '=',
       key: '=',
-      open: '=',
-      thumbnail: '='
+      open: '='
     },
     compile: function(element) {
 
