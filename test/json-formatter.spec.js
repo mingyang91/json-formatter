@@ -31,6 +31,25 @@ describe('json-formatter', function () {
     scope.emptyArray = [];
     scope.array = ['one', 'two', 'three'];
     scope.simpleObject = {me: 1};
+    scope.longerObject = {
+      numbers: [
+        1,
+        2,
+        3
+      ],
+      boolean: true,
+      'null': null,
+      number: 123,
+      anObject: {
+        a: 'b',
+        c: 'd',
+        e: 'f\"'
+      },
+      string: 'Hello World',
+      url: 'https://github.com/mohsen1/json-formatter',
+      date: 'Sun Aug 03 2014 20:46:55 GMT-0700 (PDT)',
+      func: function add(a,b){return a + b; }
+    };
 
     $compile(elm)(scope);
     scope.$digest();
@@ -73,7 +92,7 @@ describe('json-formatter', function () {
         expect(element.text()).toContain('function');
         expect(element.text()).toContain('add');
         expect(element.text()).toContain('(a, b)');
-        expect(element.text().match(/function\s[^\(]*\([^\)]*\)\s*(.*)/)[1]).toBe('{ ... }');
+        expect(element.text().trim().match(/function\s[^\(]*\([^\)]*\)\s*(.*)/)[1]).toBe('{ ... }');
       });
     });
     
@@ -83,7 +102,7 @@ describe('json-formatter', function () {
         expect(element.text()).toContain('function');
         expect(element.text()).toContain('getAdd');
         expect(element.text()).toContain('(service, a)');
-        expect(element.text().match(/function\s[^\(]*\([^\)]*\)\s*(.*)/)[1]).toBe('{ ... }');
+        expect(element.text().trim().match(/function\s[^\(]*\([^\)]*\)\s*(.*)/)[1]).toBe('{ ... }');
       });
     });
 
@@ -194,6 +213,19 @@ describe('json-formatter', function () {
       it('should open when clicking on "Object"', function(){
         element.find('.constructor-name').click();
         expect(element.find('.toggler').hasClass('open')).toBe(true);
+      });
+    });
+
+    describe('thumbnail', function() {
+
+      it('simple object', function () {
+        element = createDirective('simpleObject');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{"me":1}');
+      });
+
+      it('longer object', function () {
+        element = createDirective('longerObject');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{"numbers":[1,2,3],"boolean":true,"null":null,"...');
       });
     });
   });

@@ -112,6 +112,14 @@ angular.module('jsonFormatter', ['RecursionHelper'])
       }
       return value;
     };
+
+    scope.getThumbnail = function (object) {
+      var result = JSON.stringify(object);
+      if (result.length >= 47) {
+        result = result.substring(0, 47) + "...";
+      }
+      return result;
+    };
   }
 
   return {
@@ -121,7 +129,8 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     scope: {
       json: '=',
       key: '=',
-      open: '='
+      open: '=',
+      thumbnail: '='
     },
     compile: function(element) {
 
