@@ -61,6 +61,18 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     return value;
   }
 
+  function parseThumbnail(object) {
+    var value = '';
+    if (isObject(object)) {
+      value = getObjectName(object);
+      if (isArray(object))
+        value += '[' + object.length + ']';
+    } else {
+      value = parseValue(object, object);
+    }
+    return value;
+  }
+
   function link(scope, element, attributes) {
     scope.isArray = function () {
       return isArray(scope.json);
@@ -125,33 +137,42 @@ angular.module('jsonFormatter', ['RecursionHelper'])
       return parseValue(scope.json, value);
     };
 
-    scope.getThumbnail = function (object) {
-      var keys = scope.getKeys();
-      //
-      // the first five keys (like Chrome Developer Tool)
-      var narrowKeys = keys.filter(function (e, i) { return i < 5; });
+    scope.showThumbnail = function () {
+      return !!scope.thumbnail;
+    };
 
-      //
-      // json value schematic information
-      var kvs = narrowKeys.map(function (e) {
-        var value = '';
-        if (isObject(scope.json[e])) {
-          value = getObjectName(scope.json[e]);
-          if (isArray(scope.json[e]))
-            value += '[' + scope.json[e].length + ']';
+    scope.getThumbnail = function () {
+      if (scope.isArray()) {
+        //
+        // if array length is 256, greater then 100
+        // show "Array[256]"
+        if (scope.json.length > 100) {
+          return 'Array[' + scope.json.length + ']';
         } else {
-          value = parseValue(scope.json[e], scope.json[e]);
+          return '[' + scope.json.map(parseThumbnail).join(', ') + ']';
         }
+      } else {
 
-        return '' + e + ':' + value;
-      });
+        var keys = scope.getKeys();
+        //
+        // the first five keys (like Chrome Developer Tool)
+        var narrowKeys = keys.filter(function (e, i) {
+          return i < 5;
+        });
 
-      //
-      // if keys count greater then 5
-      // then show ellipsis
-      var ellipsis = keys.length >= 5 ? "..." : '';
+        //
+        // json value schematic information
+        var kvs = narrowKeys
+          .map(function (key) { return [key, scope.json[key]]; }) // javascript array not have zip function %>_<%
+          .map(function (e) { return '' + e[0] + ':' + parseThumbnail(e[1]); });
 
-      return '{' + kvs.join(', ') + ellipsis + '}';
+        //
+        // if keys count greater then 5
+        // then show ellipsis
+        var ellipsis = keys.length >= 5 ? "..." : '';
+
+        return '{' + kvs.join(', ') + ellipsis + '}';
+      }
     };
   }
 
@@ -162,7 +183,8 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     scope: {
       json: '=',
       key: '=',
-      open: '='
+      open: '=',
+      thumbnail: '='
     },
     compile: function(element) {
 

@@ -3,11 +3,12 @@
 describe('json-formatter', function () {
   var scope, $compile, $rootScope, element;
 
-  function createDirective(key, open) {
+  function createDirective(key, open, thumbnail) {
     open = open === undefined ? 0 : open;
+    thumbnail = thumbnail === undefined ? 0 : thumbnail;
     var elm;
     var template = '<json-formatter json="' + key + '" open="' + open +
-      '"></json-formatter>';
+      '"' + ' thumbnail="' + thumbnail + '"></json-formatter>';
 
     elm = angular.element(template);
     angular.element(document.body).prepend(elm);
@@ -50,6 +51,7 @@ describe('json-formatter', function () {
       date: 'Sun Aug 03 2014 20:46:55 GMT-0700 (PDT)',
       func: function add(a,b){return a + b; }
     };
+    scope.mixArray = [1, '2', {number: 3}];
 
     $compile(elm)(scope);
     scope.$digest();
@@ -218,14 +220,29 @@ describe('json-formatter', function () {
 
     describe('thumbnail', function() {
 
-      it('simple object', function () {
-        element = createDirective('simpleObject');
+      it('should render "simple object"', function () {
+        element = createDirective('simpleObject', 0, 1);
         expect(element.find('.thumbnail-text').text().trim()).toBe('{me:1}');
       });
 
-      it('longer object', function () {
-        element = createDirective('longerObject');
+      it('should render "longer object"', function () {
+        element = createDirective('longerObject', 0, 1);
         expect(element.find('.thumbnail-text').text().trim()).toBe('{numbers:Array[3], boolean:true, null:null, number:123, anObject:Object...}');
+      });
+
+      it('should render "array"', function () {
+        element = createDirective('array', 0, 1);
+        expect(element.find('.thumbnail-text').text().trim()).toBe('["one", "two", "three"]');
+      });
+
+      it('should render "mixArray"', function () {
+        element = createDirective('mixArray', 0, 1);
+        expect(element.find('.thumbnail-text').text().trim()).toBe('[1, "2", Object]');
+      });
+
+      it('default is disabled"', function () {
+        element = createDirective('mixArray');
+        expect(element.find('.thumbnail-text').length).toBe(0);
       });
     });
   });
