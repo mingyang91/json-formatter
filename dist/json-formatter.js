@@ -1,7 +1,7 @@
 /*!
  * jsonformatter
  * 
- * Version: 0.3.1 - 2015-08-10T10:07:05.930Z
+ * Version: 0.3.1 - 2015-08-10T15:11:27.529Z
  * License: MIT
  */
 
@@ -9,20 +9,28 @@
 'use strict';
 
 angular.module('jsonFormatter', ['RecursionHelper'])
-.provider('thumbnail', function () {
-  this.enabled = false;
+.provider('thumbnail', function thumbnailProvider() {
 
-  this.$get = function() {
-    var enabled = this.enabled;
-    return {
-      enabled: function() {
-        return enabled;
-      }
-    };
-  };
-
-  this.enabled = function(enabled) {
-    this.enabled = enabled;
+  var enabled = false;
+  var arrayCount = 100;
+  var fieldCount = 5;
+  return {
+    setEnabled: function (value) {
+      enabled = !!value;
+    },
+    setArrayCount: function (value) {
+      arrayCount = parseInt(value);
+    },
+    setFieldCount: function (value) {
+      fieldCount = parseInt(value);
+    },
+    $get: function () {
+      return {
+        enabled: enabled,
+        arrayCount: arrayCount,
+        fieldCount: fieldCount
+      };
+    }
   };
 })
 .directive('jsonFormatter', ['RecursionHelper', 'thumbnail', function (RecursionHelper, thumbnail) {
@@ -151,7 +159,7 @@ angular.module('jsonFormatter', ['RecursionHelper'])
     };
 
     scope.showThumbnail = function () {
-      return !!thumbnail.enabled() && scope.isObject() && !scope.isOpen;
+      return !!thumbnail.enabled && scope.isObject() && !scope.isOpen;
     };
 
     scope.getThumbnail = function () {
@@ -159,7 +167,7 @@ angular.module('jsonFormatter', ['RecursionHelper'])
         //
         // if array length is 256, greater then 100
         // show "Array[256]"
-        if (scope.json.length > 100) {
+        if (scope.json.length > thumbnail.arrayCount) {
           return 'Array[' + scope.json.length + ']';
         } else {
           return '[' + scope.json.map(parseThumbnail).join(', ') + ']';
@@ -169,9 +177,8 @@ angular.module('jsonFormatter', ['RecursionHelper'])
         var keys = scope.getKeys();
         //
         // the first five keys (like Chrome Developer Tool)
-        var narrowKeys = keys.filter(function (e, i) {
-          return i < 5;
-        });
+        var narrowKeys = keys.slice(0, thumbnail.fieldCount);
+
 
         //
         // json value schematic information
