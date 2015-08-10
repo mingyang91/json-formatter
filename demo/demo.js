@@ -1,5 +1,9 @@
 var app = angular.module('demo', ['ngSanitize', 'jsonFormatter']);
 
+app.config(['thumbnailProvider', function (thumbnailProvider) {
+  thumbnailProvider.setEnabled(true);
+}]);
+
 app.controller('MainCtrl', function ($scope) {
   $scope.undef = undefined;
   $scope.textarea = '{}';

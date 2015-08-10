@@ -314,9 +314,6 @@ describe('set enabled', function () {
     }
   });
 
-  beforeEach(function () {
-    fakeModule
-  });
   it('should render "simple object"', function () {
     element = createDirective('simpleObject', 0);
     expect(element.find('.thumbnail-text').text().trim()).toBe('{me:1}');

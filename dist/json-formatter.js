@@ -1,7 +1,7 @@
 /*!
  * jsonformatter
  * 
- * Version: 0.3.1 - 2015-08-10T15:11:27.529Z
+ * Version: 0.3.1 - 2015-08-10T15:25:51.017Z
  * License: MIT
  */
 
