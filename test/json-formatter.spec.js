@@ -1,14 +1,13 @@
 'use strict';
 
 describe('json-formatter', function () {
-  var scope, $compile, $rootScope, element;
+  var scope, $compile, $rootScope, element, fakeModule;
 
-  function createDirective(key, open, thumbnail) {
+  function createDirective(key, open) {
     open = open === undefined ? 0 : open;
-    thumbnail = thumbnail === undefined ? 0 : thumbnail;
     var elm;
     var template = '<json-formatter json="' + key + '" open="' + open +
-      '"' + ' thumbnail="' + thumbnail + '"></json-formatter>';
+      '"></json-formatter>';
 
     elm = angular.element(template);
     angular.element(document.body).prepend(elm);
@@ -59,7 +58,10 @@ describe('json-formatter', function () {
     return elm;
   }
 
-  beforeEach(module('ngSanitize', 'jsonFormatter'));
+  beforeEach(function () {
+    fakeModule = angular.module('test.jsonFormatter', ['jsonFormatter', 'ngSanitize']);
+    module('test.jsonFormatter', 'jsonFormatter', 'ngSanitize');
+  });
   beforeEach(inject(function(_$rootScope_, _$compile_) {
     $rootScope = _$rootScope_;
     scope = $rootScope.$new();
@@ -227,7 +229,7 @@ describe('json-formatter', function () {
 
       it('should render "longer object"', function () {
         element = createDirective('longerObject', 0, 1);
-        expect(element.find('.thumbnail-text').text().trim()).toBe('{numbers:Array[3], boolean:true, null:null, number:123, anObject:Object...}');
+        expect(element.find('.thumbnail-text').text().trim()).toBe('{numbers:Array[3], boolean:true, null:null, number:123, anObject:Object…}');
       });
 
       it('should render "array"', function () {
@@ -240,7 +242,7 @@ describe('json-formatter', function () {
         expect(element.find('.thumbnail-text').text().trim()).toBe('[1, "2", Object]');
       });
 
-      it('default is disabled"', function () {
+      it('is disabled"', function () {
         element = createDirective('mixArray');
         expect(element.find('.thumbnail-text').length).toBe(0);
       });
